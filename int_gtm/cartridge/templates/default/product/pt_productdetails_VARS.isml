@@ -1,0 +1,50 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+
+<isscript>
+let product = pdict.Product;
+let masterId = product.isVariant() || product.isVariationGroup() ? product.getMasterProduct().getID() : product.getID();
+let primaryCatID = (!empty(product.variationModel.master.primaryCategory)) ? product.variationModel.master.primaryCategory.ID : "";
+
+let definitivePrice = 0;
+let PriceModel = product.getPriceModel();
+let SalesPrice = PriceModel.getPrice();
+
+if (product.productSet) {
+    // TODO : handle productSet products
+} else if ((product.master || product.variationGroup) && product.priceModel.isPriceRange()) {
+    definitivePrice = product.priceModel.minPrice.getDecimalValue().toString().replace(',','.');
+} else if (SalesPrice.valueOrNull != null && SalesPrice.valueOrNull > 0) {
+    definitivePrice = SalesPrice.getDecimalValue().toString().replace(',','.');
+}
+</isscript>
+
+<iscomment>
+<isif condition="${product.productSet}">
+<iselseif condition="${(product.master || product.variationGroup) && product.priceModel.isPriceRange()}" >
+    <isset name="definitivePrice" value="${product.priceModel.minPrice.getDecimalValue().toString().replace(',','.')}" scope="page"/>
+<iselse/>
+    <isif condition="${(SalesPrice.valueOrNull != null && SalesPrice.valueOrNull > 0)}">
+        <isset name="definitivePrice" value="${SalesPrice.getDecimalValue().toString().replace(',','.')}" scope="page"/>
+    </isif>
+</isif>
+
+<h1>=> <isprint value="${(product.variationModel.getProductVariationAttributes()[0]).displayName}" /></h1>
+</iscomment>
+
+<script>
+dataLayer.push({
+    'ecommerce': {
+        'detail': {
+            'actionField': {'list': 'PDP'}, // 'detail' actions have an optional list property.
+            'products': [{
+                'name': '<isprint value="${product.getName()}" />',
+                'id': '<isprint value="${masterId}" />',
+                'price': '<isprint value="${definitivePrice}" />',
+                'brand': '<isprint value="${product.getBrand()}" />',
+                'category': '<isprint value="${primaryCatID}" />'/*,
+                'variant': 'Gray'*/
+            }]
+        }
+    }
+});
+</script>

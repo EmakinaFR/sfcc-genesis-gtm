@@ -1,0 +1,27 @@
+{
+  "name": "gtm-module",
+  "version": "1.0.0",
+  "description": "Gtm Module Link Cartridge",
+  "main": "index.js",
+  "scripts": {
+    "lint": "sgmf-scripts --lint js && sgmf-scripts --lint css;exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.emakina.net:emakinafr/packages/javascript/salesforce-commerce-cloud/gtm-module.git"
+  },
+  "keywords": [
+    "gtm",
+    "ecommerce",
+    "analytics"
+  ],
+  "author": "tds@emakina.fr",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-sitegenesis": "^1.0.0",
+    "sgmf-scripts": "^2.3.0"
+  }
+}
