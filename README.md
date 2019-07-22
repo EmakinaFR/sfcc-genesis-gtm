@@ -4,7 +4,7 @@ Gtm Module Link Cartridge
 ## Introduction
 
 The aim of this module is to facilitate GTM integration. By adding it in your project you will be able to 
-have GTM include in your header and a set of e-commerce tags pre-defined. You can add or update tags but 
+have GTM included in your header and a set of e-commerce tags pre-defined. You can add or update tags but 
 normally all MVP ones are already handled.
 
 

@@ -5,32 +5,40 @@
  * @module controllers/GTM
  */
 
-/* API Includes */
-//var Logger = require('dw/system/Logger');
+/* global request */
+/* global session */
 
 /* Script Modules */
 var app = require('app_storefront_controllers/cartridge/scripts/app');
 var guard = require('app_storefront_controllers/cartridge/scripts/guard');
 var Site = require('dw/system/Site');
+var System = require('dw/system/System');
+var Locale = require('dw/util/Locale');
 
+/**
+ * Displays a template rendering GTM code (if GTM tag is configured inside Business Manager) and
+ * add a dataLayer.
+ */
 function addScript() {
     let gtmCode = Site.getCurrent().getCustomPreferenceValue('GtmCode');
-    let localeObj = dw.util.Locale.getLocale(request.locale);
-    let userAuthenticated = (session.customer.authenticated === true) ? "1" : "0";
+    let localeObj = Locale.getLocale(request.locale);
+    let userAuthenticated = (session.customer.authenticated === true) ? '1' : '0';
     let country = localeObj.country.toUpperCase(); // ex: US
     let locale = localeObj.ID; // ex: en_US
     let language = localeObj.language; // ex: en
-    let instanceType = "";
+    let instanceType = '';
 
-    switch (dw.system.System.instanceType) {
-        case dw.system.System.DEVELOPMENT_SYSTEM:
-            instanceType = "development";
+    switch (System.instanceType) {
+        case System.DEVELOPMENT_SYSTEM:
+            instanceType = 'development';
             break;
-        case dw.system.System.STAGING_SYSTEM:
-            instanceType = "staging";
+        case System.STAGING_SYSTEM:
+            instanceType = 'staging';
             break;
-        case dw.system.System.PRODUCTION_SYSTEM:
-            instanceType = "production";
+        case System.PRODUCTION_SYSTEM:
+            instanceType = 'production';
+            break;
+        default:
             break;
     }
 
@@ -46,11 +54,14 @@ function addScript() {
     }).render('gtmcode');
 }
 
+/**
+ * Displays a template rendering GTM noscript code.
+ */
 function addNoscript() {
     let gtmCode = Site.getCurrent().getCustomPreferenceValue('GtmCode');
 
     app.getView({
-        GtmCode: gtmCode,
+        GtmCode: gtmCode
     }).render('gtmnoscriptcode');
 }
 

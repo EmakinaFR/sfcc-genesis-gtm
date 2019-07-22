@@ -4,7 +4,7 @@
   "description": "Gtm Module Link Cartridge",
   "main": "index.js",
   "scripts": {
-    "lint": "sgmf-scripts --lint js && sgmf-scripts --lint css;exit 0"
+    "lint": "sgmf-scripts --lint js; exit 0"
   },
   "repository": {
     "type": "git",
