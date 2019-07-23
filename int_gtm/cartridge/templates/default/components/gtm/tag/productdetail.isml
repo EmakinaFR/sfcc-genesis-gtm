@@ -1,0 +1,19 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+
+<isinclude template="components/gtm/productdata"/>
+<script>
+dataLayer.push({
+    'ecommerce': {
+        'detail': {
+            'actionField': {'list': pdpData.list}, // 'detail' actions have an optional list property.
+            'products': [{
+                'name': pdpData.name,
+                'id': pdpData.id,
+                'price': pdpData.price,
+                'brand': pdpData.brand,
+                'category': pdpData.category
+            }]
+        }
+    }
+});
+</script>

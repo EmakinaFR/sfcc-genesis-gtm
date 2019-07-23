@@ -1,0 +1,2 @@
+
+<script src="${URLUtils.staticURL('/js/gtm.js')}"></script>
