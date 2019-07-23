@@ -1,2 +1,43 @@
 
 <script src="${URLUtils.staticURL('/js/gtm.js')}"></script>
+
+<isif condition="${pageContext.type === 'orderconfirmation'}">
+    <script>
+    dataLayer.push({
+        'ecommerce': {
+            'purchase': {
+                'actionField': {
+                    'id': '<isprint value="${pdict.Order.orderNo}"/>',       // Transaction ID. Required for purchases and refunds.
+                    'affiliation': 'Online Store', // TODO : dynamize that
+                    'revenue': '<isprint value="${pdict.Order.getTotalGrossPrice().getValue()}"/>',   // Total transaction value (incl. tax and shipping)
+                    'tax':'<isprint value="${pdict.Order.getTotalTax().getValue()}"/>',
+                    'shipping': '<isprint value="${pdict.Order.getShippingTotalPrice().getValue()}"/>',
+                },
+                'products': [
+                    <isloop items="${pdict.Order.shipments}" var="shipment" status="shipmentloopstate">
+                        <isloop items="${shipment.productLineItems}" var="productLineItem" status="pliloopstate">
+                            <isscript>
+                                var p = productLineItem.product;
+                                var primaryCatID = "";
+                                if (!empty(p.primaryCategory)) {
+                                    primaryCatID = p.primaryCategory.getID();
+                                } else if (!p.isMaster()) {
+                                    primaryCatID = p.getVariationModel().getMaster().getPrimaryCategory().getID();
+                                }
+                            </isscript>
+                            {
+                                'name': '<isprint value="${p.getName()}" />',     // Name or ID is required.
+                                'id': '<isprint value="${productLineItem.productID}" />',
+                                'price': '<isprint value="${p.getPriceModel().getPrice().getDecimalValue().toString().replace(',','.')}" />',
+                                'brand': '<isprint value="${p.getBrand()}" />',
+                                'category': '<isprint value="${primaryCatID}" />',
+                                'quantity': '<isprint value="${productLineItem.quantityValue.toFixed(0)}" />'
+                            },
+                        </isloop>
+                    </isloop>
+                ]
+            }
+        }
+    });
+    </script>
+</isif>

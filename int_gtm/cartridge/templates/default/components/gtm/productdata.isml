@@ -18,7 +18,7 @@ let SalesPrice = PriceModel.getPrice();
 
 if (product.productSet) {
     // TODO : handle productSet products
-} else if ((product.master || product.variationGroup) && product.priceModel.isPriceRange()) {
+} else if (product.master || product.variationGroup) {
     definitivePrice = product.priceModel.minPrice.getDecimalValue().toString().replace(',','.');
 } else if (SalesPrice.valueOrNull != null && SalesPrice.valueOrNull > 0) {
     definitivePrice = SalesPrice.getDecimalValue().toString().replace(',','.');
