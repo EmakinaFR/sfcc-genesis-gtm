@@ -28,4 +28,32 @@ var addToCart = function () {
     });
 };
 
+var removeFromCart = function (e) {
+    // console.log(e);
+
+    // dwfrm_cart_shipments_i0_items_i0_deleteProduct
+
+    // qty : dwfrm_cart_shipments_i0_items_i0_deleteProduct
+
+    // console.log(e.currentTarget);
+
+    /* dataLayer.push({
+        'event': 'removeFromCart',
+        'ecommerce': {
+            'remove': {                               // 'remove' actionFieldObject measures.
+                'products': [{                          //  removing a product to a shopping cart.
+                    'name': 'Triblend Android T-Shirt',
+                    'id': '12345',
+                    'price': '15.25',
+                    'brand': 'Google',
+                    'category': 'Apparel',
+                    'variant': 'Gray',
+                    'quantity': 1
+                }]
+            }
+        }
+    }); */
+};
+
 $('.product-detail').on('click', '.add-to-cart', addToCart);
+$('button[name$="deleteProduct"]').on('click', removeFromCart);

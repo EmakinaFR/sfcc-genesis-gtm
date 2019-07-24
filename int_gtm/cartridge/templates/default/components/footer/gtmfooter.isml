@@ -1,7 +1,58 @@
 
 <script src="${URLUtils.staticURL('/js/gtm.js')}"></script>
 
-<isif condition="${pageContext.type === 'orderconfirmation'}">
+<isif condition="${pageContext.type === 'checkout'}">
+    <isscript>
+    var stepGtm = 0;
+    if (!empty(step1state) && step1state == 'active') {
+        stepGtm = 1;
+    } else if (!empty(step2state) && step2state == 'active') {
+        stepGtm = 2;
+    } else if (!empty(step3state) && step3state == 'active') {
+        stepGtm = 3;
+    } else if (!empty(step4state) && step4state == 'active') {
+        stepGtm = 4;
+    }
+    </isscript>
+
+    <isif condition="${stepGtm > 0}">
+        <h1>stepGtm = <isprint value="${stepGtm}" formatter="#" /></h1>
+
+        <script>
+        dataLayer.push({
+            'event': 'checkout',
+            'ecommerce': {
+                'checkout': {
+                    'actionField': {'step': <isprint value="${stepGtm}">},
+                    'products': [
+                        <isloop items="${pdict.Basket.shipments}" var="shipment" status="shipmentloopstate">
+                            <isloop items="${shipment.productLineItems}" var="productLineItem" status="pliloopstate">
+                                <isscript>
+                                    var p = productLineItem.product;
+                                    var primaryCatID = "";
+                                    if (!empty(p.primaryCategory)) {
+                                        primaryCatID = p.primaryCategory.getID();
+                                    } else if (!p.isMaster()) {
+                                        primaryCatID = p.getVariationModel().getMaster().getPrimaryCategory().getID();
+                                    }
+                                </isscript>
+                                {
+                                    'name': '<isprint value="${p.getName()}" />',     // Name or ID is required.
+                                    'id': '<isprint value="${productLineItem.productID}" />',
+                                    'price': '<isprint value="${p.getPriceModel().getPrice().getDecimalValue().toString().replace(',','.')}" />',
+                                    'brand': '<isprint value="${p.getBrand()}" />',
+                                    'category': '<isprint value="${primaryCatID}" />',
+                                    'quantity': '<isprint value="${productLineItem.quantityValue.toFixed(0)}" />'
+                                },
+                            </isloop>
+                        </isloop>
+                    ]
+                }
+            }
+        });
+        </script>
+    </isif>
+<iselseif condition="${pageContext.type === 'orderconfirmation'}">
     <script>
     dataLayer.push({
         'ecommerce': {

@@ -10,7 +10,13 @@
 <isscript>
 let product = pdict.Product;
 let masterId = product.isVariant() || product.isVariationGroup() ? product.getMasterProduct().getID() : product.getID();
-let primaryCatID = (!empty(product.variationModel.master.primaryCategory)) ? product.variationModel.master.primaryCategory.ID : "";
+
+let primaryCatID = "";
+if (!empty(product.primaryCategory)) {
+    primaryCatID = product.primaryCategory.getID();
+} else if (!p.isMaster()) {
+    primaryCatID = product.getVariationModel().getMaster().getPrimaryCategory().getID();
+}
 
 let definitivePrice = 0;
 let PriceModel = product.getPriceModel();
