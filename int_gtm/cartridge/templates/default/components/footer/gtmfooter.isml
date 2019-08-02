@@ -1,7 +1,8 @@
 
 <script src="${URLUtils.staticURL('/js/gtm.js')}"></script>
 
-<isif condition="${pageContext.type === 'checkout'}">
+<isif condition="${pageContext.type === 'product'}">
+<iselseif condition="${pageContext.type === 'checkout'}">
     <isscript>
     var stepGtm = 0;
     if (!empty(step1state) && step1state == 'active') {
