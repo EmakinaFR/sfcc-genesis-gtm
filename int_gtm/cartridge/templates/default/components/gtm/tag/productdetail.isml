@@ -42,7 +42,7 @@ if (document.getElementsByClassName('search-result-options').length === 0) {
 
 var currentIndex = 0;
 var pdpData = [];
-var currency = '<isprint value="${session.getCurrency().getCurrencyCode()}" />';
+var pdpCurrency = '<isprint value="${session.getCurrency().getCurrencyCode()}" />';
 </script>
 
 <isscript>

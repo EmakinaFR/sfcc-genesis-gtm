@@ -1,6 +1,8 @@
 
 /* global dataLayer */
 /* global pdpData */
+/* global cartData */
+/* global pdpCurrency */
 /* global $ */
 
 /**
@@ -13,8 +15,34 @@ function sendAddToCartToDataLayer(product, qty) {
     dataLayer.push({
         event: 'addToCart',
         ecommerce: {
-            currencyCode: product.currency,
+            currencyCode: pdpCurrency,
             add: {
+                products: [{
+                    name: product.name,
+                    id: product.id,
+                    price: product.price,
+                    brand: product.brand,
+                    category: product.category,
+                    /* 'variant': 'Gray', */
+                    quantity: qty
+                }]
+            }
+        }
+    });
+}
+
+/**
+ * @description Function that is used to mutualize dataLayer.push
+ * for removeFromCart event
+ * @param {Object} product  Product data to send to dataLayer
+ * @param {string} qty      Quantity added to cart for this product
+ */
+function sendRemoveFromCartToDataLayer(product, qty) {
+    dataLayer.push({
+        event: 'removeFromCart',
+        ecommerce: {
+            currencyCode: pdpCurrency,
+            remove: {
                 products: [{
                     name: product.name,
                     id: product.id,
@@ -82,33 +110,15 @@ var addAllToCart = function (e) {
 
 /**
  * @description Handler to handle the remove from cart event
- * @param {Object} e  Click event object
  */
-var removeFromCart = function (e) {
-    // console.log(e);
+var removeFromCart = function () {
+    var indexes = $(this).attr('name').match(/([0-9]+)/g);
+    var removedProduct = null;
 
-    // dwfrm_cart_shipments_i0_items_i0_deleteProduct
-
-    // qty : dwfrm_cart_shipments_i0_items_i0_deleteProduct
-
-    // console.log(e.currentTarget);
-
-    /* dataLayer.push({
-        'event': 'removeFromCart',
-        'ecommerce': {
-            'remove': {                               // 'remove' actionFieldObject measures.
-                'products': [{                          //  removing a product to a shopping cart.
-                    'name': 'Triblend Android T-Shirt',
-                    'id': '12345',
-                    'price': '15.25',
-                    'brand': 'Google',
-                    'category': 'Apparel',
-                    'variant': 'Gray',
-                    'quantity': 1
-                }]
-            }
-        }
-    }); */
+    if (indexes.length === 2) {
+        removedProduct = cartData[indexes[0]][indexes[1]];
+        sendRemoveFromCartToDataLayer(removedProduct, 1);
+    }
 };
 
 $('.product-detail').on('click', '.add-to-cart', addToCart);

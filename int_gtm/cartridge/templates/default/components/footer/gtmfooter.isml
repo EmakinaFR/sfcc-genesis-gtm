@@ -1,7 +1,54 @@
 
 <script src="${URLUtils.staticURL('/js/gtm.js')}"></script>
 
-<isif condition="${pageContext.type === 'product'}">
+<isif condition="${pageContext.type === 'Cart'}">
+    <script>
+    var cartData = [];
+    var pdpCurrency = '<isprint value="${session.getCurrency().getCurrencyCode()}" />';
+    </script>
+
+    <isloop items="${pdict.CurrentForms.cart.shipments}" var="Shipment"	status="loopstateShipments">
+        <script>
+        cartData.push([]);
+        </script>
+
+        <isloop items="${Shipment.items}" alias="FormLi" status="loopstate">
+            <isset name="lineItem" value="${FormLi.object}" scope="page" />
+            <isset name="CurrentProduct" value="${lineItem.product}" scope="page" />
+            <isscript>
+            let masterId = CurrentProduct.isVariant() || CurrentProduct.isVariationGroup() ? CurrentProduct.getMasterProduct().getID() : CurrentProduct.getID();
+
+            let primaryCatID = "";
+            if (!empty(CurrentProduct.primaryCategory)) {
+                primaryCatID = CurrentProduct.primaryCategory.getID();
+            } else if (!CurrentProduct.isMaster()) {
+                primaryCatID = CurrentProduct.getVariationModel().getMaster().getPrimaryCategory().getID();
+            }
+
+            let definitivePrice = 0;
+            let PriceModel = CurrentProduct.getPriceModel();
+            let SalesPrice = PriceModel.getPrice();
+
+            if (CurrentProduct.productSet) {
+            } else if (CurrentProduct.master || CurrentProduct.variationGroup) {
+                definitivePrice = CurrentProduct.priceModel.minPrice.getDecimalValue().toString().replace(',','.');
+            } else if (SalesPrice.valueOrNull != null && SalesPrice.valueOrNull > 0) {
+                definitivePrice = SalesPrice.getDecimalValue().toString().replace(',','.');
+            }
+            </isscript>
+
+            <script>
+            cartDataI = <isprint value="${loopstateShipments.index.toFixed(0)}" />;
+            cartData[cartDataI].push({
+                'name': '<isprint value="${lineItem.product.getName()}" />',
+                'id': '<isprint value="${masterId}" />',
+                'price': '<isprint value="${definitivePrice}" />',
+                'brand': '<isprint value="${CurrentProduct.getBrand()}" />',
+                'category': '<isprint value="${primaryCatID}" />'
+            });
+            </script>
+        </isloop>
+    </isloop>
 <iselseif condition="${pageContext.type === 'checkout'}">
     <isscript>
     var stepGtm = 0;
