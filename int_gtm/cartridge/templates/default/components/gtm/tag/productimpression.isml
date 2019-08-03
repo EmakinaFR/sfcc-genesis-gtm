@@ -1,0 +1,41 @@
+<script>
+dataLayer.push({
+  'ecommerce': {
+    'currencyCode': '<isprint value="${session.getCurrency().getCurrencyCode()}" />',
+    'impressions': [
+	<isloop items="${pdict.gtmImpressionProducts}" var="product" status="loopstate">
+		<isscript>
+			var p = product;
+			var primaryCatID = "";
+			if (!empty(p.primaryCategory)) {
+				primaryCatID = p.primaryCategory.getID();
+			} else if (!p.isMaster()) {
+				primaryCatID = p.getVariationModel().getMaster().getPrimaryCategory().getID();
+			}
+
+			let definitivePrice = 0;
+			let PriceModel = p.getPriceModel();
+			let SalesPrice = PriceModel.getPrice();
+
+			if (p.productSet) {
+			} else if (p.master || p.variationGroup) {
+				definitivePrice = p.priceModel.minPrice.getDecimalValue().toString().replace(',','.');
+			} else if (SalesPrice.valueOrNull != null && SalesPrice.valueOrNull > 0) {
+				definitivePrice = SalesPrice.getDecimalValue().toString().replace(',','.');
+			}
+		</isscript>
+		{
+			'name': '<isprint value="${p.getName()}" />',
+			'id': '<isprint value="${p.ID}" />',
+			'price': '<isprint value="${definitivePrice}" />',
+			'brand': '<isprint value="${p.getBrand()}" />',
+			'category': '<isprint value="${primaryCatID}" />',
+			//'variant': 'Gray',
+			'list': '<isprint value="${pdict.productImpressionList}" />',
+			'position': <isprint value="${loopstate.index + 1}" formatter="#" />
+		},
+	</isloop>
+	]
+  }
+});
+</script>

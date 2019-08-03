@@ -1,5 +1,27 @@
 <iscontent type="text/html" charset="UTF-8" compact="true"/>
 
+<script>
+
+var iGtmProductDisplayed = 0;
+var dataGtmProductDisplay = [];
+function newProductDisplay(pdpData, isLast) {
+    dataGtmProductDisplay.push(pdpData);
+    iGtmProductDisplayed++;
+
+    if (iGtmProductDisplayed % 10 === 0 || isLast) {
+        dataLayer.push({
+            'ecommerce': {
+                'currencyCode': 'EUR',
+                'impressions': dataGtmProductDisplay
+            }
+        });
+
+        dataGtmProductDisplay = [];
+    }
+}
+
+</script>
+
 <isif condition="${!empty(pdict.GtmCode)}">
     <script type="text/javascript">
     dataLayer = [{
