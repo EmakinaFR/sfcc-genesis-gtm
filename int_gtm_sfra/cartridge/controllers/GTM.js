@@ -23,8 +23,8 @@ server.get(
         var country = localeObj.country.toUpperCase(); // ex: US
         var locale = localeObj.ID; // ex: en_US
         var language = localeObj.language; // ex: en
-        var instanceType = '';
 
+        var instanceType = '';
         switch (System.instanceType) {
             case System.DEVELOPMENT_SYSTEM:
                 instanceType = 'development';
@@ -38,7 +38,7 @@ server.get(
             default:
                 break;
         }
-
+        
         ISML.renderTemplate('header/gtmcode', {
             GtmCode: gtmCode,
             Data: {
@@ -49,19 +49,19 @@ server.get(
                 InstanceType: instanceType
             }
         });
+    }
+);
 
-        /* res.render('header/gtmcode', {
-            GtmCode: gtmCode,
-            Data: {
-                Country: country,
-                Locale: locale,
-                Language: language,
-                UserAuthenticated: userAuthenticated,
-                InstanceType: instanceType
-            }
-        });*/
+server.get(
+    'AddNoscript',
+    server.middleware.https,
+    consentTracking.consent,
+    function (req, res, next) {
+        var gtmCode = Site.getCurrent().getCustomPreferenceValue('GtmCode');
 
-        // next();
+        ISML.renderTemplate('header/gtmnoscriptcode', {
+            GtmCode: gtmCode
+        });
     }
 );
 

@@ -1,0 +1,12 @@
+{
+    "hooks": [
+        {
+            "name": "app.template.htmlHead",
+            "script": "~/cartridge/script/hooks/product/dataLayer.js"
+        },
+        {
+            "name": "app.template.afterFooter",
+            "script": "~/cartridge/script/hooks/product/dataLayer.js"
+        }
+    ]
+}

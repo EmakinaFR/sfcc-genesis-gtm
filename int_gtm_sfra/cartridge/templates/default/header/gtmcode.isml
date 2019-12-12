@@ -1,35 +1,33 @@
 <iscontent type="text/html" charset="UTF-8" compact="true"/>
 
 <script>
+    var iGtmProductDisplayed = 0;
+    var dataGtmProductDisplay = [];
+    function newProductDisplay(pdpData, isLast) {
+        dataGtmProductDisplay.push(pdpData);
+        iGtmProductDisplayed++;
 
-var iGtmProductDisplayed = 0;
-var dataGtmProductDisplay = [];
-function newProductDisplay(pdpData, isLast) {
-    dataGtmProductDisplay.push(pdpData);
-    iGtmProductDisplayed++;
-
-    if (iGtmProductDisplayed % 10 === 0 || isLast) {
-        dataLayer.push({
-            'ecommerce': {
-                'currencyCode': 'EUR',
-                'impressions': dataGtmProductDisplay
-            }
-        });
-
-        dataGtmProductDisplay = [];
+        if (iGtmProductDisplayed % 10 === 0 || isLast) {
+            window.dataLayer.push({
+                'ecommerce': {
+                    'currencyCode': 'EUR',
+                    'impressions': dataGtmProductDisplay
+                }
+            });
+            dataGtmProductDisplay = [];
+        }
     }
-}
-
 </script>
 
 <isif condition="${!empty(pdict.GtmCode)}">
     <script type="text/javascript">
+    
     dataLayer = [{
         'country' : '<isprint value="${pdict.Data.Country}" />',
         'locale' : '<isprint value="${pdict.Data.Locale}" />',
         'language' : '<isprint value="${pdict.Data.Language}" />',
         'user_authenticated': '<isprint value="${pdict.Data.UserAuthenticated}" />',
-        'instance': '<isprint value="${pdict.Data.InstanceType}" />',
+        'instance': '<isprint value="${pdict.Data.InstanceType}" />'
     }];
     </script>
 
@@ -40,4 +38,6 @@ function newProductDisplay(pdpData, isLast) {
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','<isprint value="${pdict.GtmCode}"/>');</script>
     <!-- End Google Tag Manager -->
+
+    
 </isif>
