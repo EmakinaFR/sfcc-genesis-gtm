@@ -1,15 +1,15 @@
 'use strict';
+
 /**
  * @type {dw.template.Velocity.render}
  */
 const velocity = require('dw/template/Velocity');
 /**
  * Hook proxy for htmlHead hook
- * Executes remote include for 
+ * Executes remote include for add add-script gtm in header
  */
-
-function htmlHead(/*ismlParams*/) {
-    velocity.render('$velocity.remoteInclude(\'GTM-AddScript\')', {'velocity': velocity});
+function htmlHead() {
+    velocity.render('$velocity.remoteInclude(\'GTM-AddScript\')', { velocity: velocity });
 }
 
 function afterFooter()
@@ -19,4 +19,3 @@ function afterFooter()
 
 exports.htmlHead = htmlHead;
 exports.afterFooter = afterFooter;
-exports.GTMmodule = GTMmodule;
