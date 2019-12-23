@@ -6,7 +6,6 @@
  */
 var server = require('server');
 var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
-var ISML = require('dw/template/ISML');
 
 server.get(
     'AddScript',
@@ -18,7 +17,7 @@ server.get(
         var Locale = require('dw/util/Locale');
 
         var gtmCode = Site.getCurrent().getCustomPreferenceValue('GtmCode');
-        var localeObj = Locale.getLocale(request.locale); // eslint-disable-line no-undef
+        var localeObj = Locale.getLocale(req.locale.id);
         var userAuthenticated = (session.customer.authenticated === true) ? '1' : '0'; // eslint-disable-line no-undef
         var country = localeObj.country.toUpperCase(); // ex: US
         var locale = localeObj.ID; // ex: en_US
@@ -38,8 +37,8 @@ server.get(
             default:
                 break;
         }
-        
-        ISML.renderTemplate('header/gtmcode', {
+
+        res.render('header/gtmcode', {
             GtmCode: gtmCode,
             Data: {
                 Country: country,
@@ -49,6 +48,8 @@ server.get(
                 InstanceType: instanceType
             }
         });
+
+        next();
     }
 );
 
@@ -57,11 +58,15 @@ server.get(
     server.middleware.https,
     consentTracking.consent,
     function (req, res, next) {
+        var Site = require('dw/system/Site');
+
         var gtmCode = Site.getCurrent().getCustomPreferenceValue('GtmCode');
 
-        ISML.renderTemplate('header/gtmnoscriptcode', {
+        res.render('header/gtmnoscriptcode', {
             GtmCode: gtmCode
         });
+
+        next();
     }
 );
 
