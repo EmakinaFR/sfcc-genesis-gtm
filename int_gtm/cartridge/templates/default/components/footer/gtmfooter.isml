@@ -64,8 +64,6 @@
     </isscript>
 
     <isif condition="${stepGtm > 0}">
-        <h1>stepGtm = <isprint value="${stepGtm}" formatter="#" /></h1>
-
         <script>
         dataLayer.push({
             'event': 'checkout',
@@ -78,10 +76,23 @@
                                 <isscript>
                                     var p = productLineItem.product;
                                     var primaryCatID = "";
+                                    var variationsData = "";
+
                                     if (!empty(p.primaryCategory)) {
                                         primaryCatID = p.primaryCategory.getID();
                                     } else if (!p.isMaster()) {
                                         primaryCatID = p.getVariationModel().getMaster().getPrimaryCategory().getID();
+                                    }
+
+                                    if (p.isVariant() || p.isMaster()) {
+                                        variationAttrs = p.variationModel.getProductVariationAttributes();
+                                        variationAttrsLength = variationAttrs.getLength();
+
+                                        for (let i = 0; i < variationAttrsLength; i++) {
+                                            let attr = variationAttrs[i];
+                                            let value = p.variationModel.getSelectedValue(attr).displayValue;
+                                            variationsData += "'variant_" + attr.displayName + "': '" + value + "',";
+                                        }
                                     }
                                 </isscript>
                                 {
@@ -90,7 +101,8 @@
                                     'price': '<isprint value="${p.getPriceModel().getPrice().getDecimalValue().toString().replace(',','.')}" />',
                                     'brand': '<isprint value="${p.getBrand()}" />',
                                     'category': '<isprint value="${primaryCatID}" />',
-                                    'quantity': '<isprint value="${productLineItem.quantityValue.toFixed(0)}" />'
+                                    'quantity': '<isprint value="${productLineItem.quantityValue.toFixed(0)}" />',
+                                    <isprint value="${variationsData}" encoding="off" />
                                 },
                             </isloop>
                         </isloop>
@@ -118,10 +130,25 @@
                             <isscript>
                                 var p = productLineItem.product;
                                 var primaryCatID = "";
+                                var variationAttrs;
+                                var variationAttrsLength = 0;
+                                var variationsData = "";
+
                                 if (!empty(p.primaryCategory)) {
                                     primaryCatID = p.primaryCategory.getID();
                                 } else if (!p.isMaster()) {
                                     primaryCatID = p.getVariationModel().getMaster().getPrimaryCategory().getID();
+                                }
+
+                                if (p.isVariant() || p.isMaster()) {
+                                    variationAttrs = p.variationModel.getProductVariationAttributes();
+                                    variationAttrsLength = variationAttrs.getLength();
+
+                                    for (let i = 0; i < variationAttrsLength; i++) {
+                                        let attr = variationAttrs[i];
+                                        let value = p.variationModel.getSelectedValue(attr).displayValue;
+                                        variationsData += "'variant_" + attr.displayName + "': '" + value + "',";
+                                    }
                                 }
                             </isscript>
                             {
@@ -130,7 +157,8 @@
                                 'price': '<isprint value="${p.getPriceModel().getPrice().getDecimalValue().toString().replace(',','.')}" />',
                                 'brand': '<isprint value="${p.getBrand()}" />',
                                 'category': '<isprint value="${primaryCatID}" />',
-                                'quantity': '<isprint value="${productLineItem.quantityValue.toFixed(0)}" />'
+                                'quantity': '<isprint value="${productLineItem.quantityValue.toFixed(0)}" />',
+                                <isprint value="${variationsData}" encoding="off" />
                             },
                         </isloop>
                     </isloop>
