@@ -157,4 +157,61 @@ server.get(
         next();
     }
 );
+
+server.get(
+    'OrderConfirmation',
+    server.middleware.https,
+    consentTracking.consent,
+    function (req, res, next) {
+        var orderData = request.httpParameterMap.orderData;
+        var order = JSON.parse(orderData);
+
+        var purchase = {
+            id: order.orderNumber,
+            affiliation: 'Online Store',
+            revenue: order.totals.grandTotal,
+            tax: order.totals.totalTax,
+            shipping: order.totals.totalShippingCost,
+            coupon: null
+        };
+        var orderProduct = [];
+        for (var z = 0; z < order.shipping.length; z += 1) {
+            var listProdData = order.shipping[z].productLineItems.items;
+            for (var i = 0; i < listProdData.length; i += 1) {
+                var currentProduct = listProdData[i];
+                orderProduct.push({
+                    id: currentProduct.id,
+                    name: currentProduct.productName,
+                    price: currentProduct.priceTotal.price,
+                    brand: currentProduct.brand,
+                    quantity: currentProduct.quantity
+                });
+
+                if (currentProduct.productType === 'variant') {
+                    var variantAttr = currentProduct.variationAttributes;
+                    for (var y = 0; y < variantAttr.length; y += 1) {
+                        var variantName = 'variant_' + variantAttr[y].displayName;
+                        orderProduct[i][variantName] = variantAttr[y].displayValue;
+                    }
+                }
+
+                if (currentProduct.options !== '') {
+                    var optionAttr = currentProduct.options;
+                    for (var x = 0; x < optionAttr.length; x += 1) {
+                        var optionName = 'option_' + optionAttr[x].optionId;
+                        orderProduct[i][optionName] = optionAttr[x].selectedValueId;
+                    }
+                }
+            }
+        }
+        purchase.product = orderProduct;
+        var commandProduct = JSON.stringify(purchase);
+
+        res.render('gtmdataconfirm', {
+            CommandProduct: commandProduct
+        });
+        next();
+    }
+);
+
 module.exports = server.exports();
