@@ -17,8 +17,12 @@ function htmlHead() {
  * Hook proxy for htmlHead hook
  * Executes remote include in order to add gtm noscript in footer
  */
-function afterFooter() {
+/**
+ * @param {Object} productID id product
+ */
+function afterFooter(productID) {
     velocity.render('$velocity.remoteInclude(\'GTM-AddNoScript\')', { velocity: velocity });
+    velocity.render('$velocity.remoteInclude(\'GTM-DataProd\', \'productID\', $productID)', { velocity: velocity, productID: productID });
 }
 
 exports.htmlHead = htmlHead;
