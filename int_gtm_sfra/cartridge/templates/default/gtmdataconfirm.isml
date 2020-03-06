@@ -1,0 +1,8 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+<script>
+    dataLayer.push({
+        'ecommerce': {
+            'purchase': <isprint value="${pdict.CommandProduct}" encoding="off" />
+        }
+    });
+</script>

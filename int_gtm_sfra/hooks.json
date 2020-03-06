@@ -7,6 +7,10 @@
         {
             "name": "app.template.afterFooter",
             "script": "~/cartridge/script/hooks/product/dataLayer.js"
+        },
+        {
+            "name": "app.template.confirmation",
+            "script": "~/cartridge/script/hooks/product/dataLayer.js"
         }
     ]
 }

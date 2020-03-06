@@ -25,5 +25,14 @@ function afterFooter(productID) {
     velocity.render('$velocity.remoteInclude(\'GTM-DataProd\', \'productID\', $productID)', { velocity: velocity, productID: productID });
 }
 
+/**
+ * @param {Object} orderData order data
+ */
+function confirmation(orderData) {
+    var orderDataString = JSON.stringify(orderData);
+    velocity.render('$velocity.remoteInclude(\'GTM-OrderConfirmation\', \'orderData\', $orderData)', { velocity: velocity, orderData: orderDataString });
+}
+
 exports.htmlHead = htmlHead;
 exports.afterFooter = afterFooter;
+exports.confirmation = confirmation;
