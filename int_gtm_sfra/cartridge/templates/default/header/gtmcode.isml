@@ -39,5 +39,4 @@
     })(window,document,'script','dataLayer','<isprint value="${pdict.GtmCode}"/>');</script>
     <!-- End Google Tag Manager -->
 
-    
 </isif>

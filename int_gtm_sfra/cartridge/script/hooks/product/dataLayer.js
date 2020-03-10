@@ -7,6 +7,7 @@ var velocity = require('dw/template/Velocity');
 
 /**
  * Hook proxy for htmlHead hook
+ *
  * Executes remote include for add add-script gtm in header
  */
 function htmlHead() {
@@ -14,25 +15,39 @@ function htmlHead() {
 }
 
 /**
- * Hook proxy for htmlHead hook
- * Executes remote include in order to add gtm noscript in footer
+ * Hook proxy for afterFooter hook
+ *
+ * Executes remote include in order to:
+ *      - add gtm noscript in footer
+ *      - add PDP data if we are watching the PDP
+ *      - add purchase data if we are watching the confirmation page
+ *
+ * @param {Object} pdict dictionary given by the controller
  */
-/**
- * @param {Object} productID id product
- */
-function afterFooter(productID) {
-    velocity.render('$velocity.remoteInclude(\'GTM-AddNoScript\')', { velocity: velocity });
-    velocity.render('$velocity.remoteInclude(\'GTM-DataProd\', \'productID\', $productID)', { velocity: velocity, productID: productID });
-}
+function afterFooter(pdict) {
+    var productID = (pdict.product) ? pdict.product.id : false;
+    var order = (pdict.order) ? pdict.order : false;
 
-/**
- * @param {Object} orderData order data
- */
-function confirmation(orderData) {
-    var orderDataString = JSON.stringify(orderData);
-    velocity.render('$velocity.remoteInclude(\'GTM-OrderConfirmation\', \'orderData\', $orderData)', { velocity: velocity, orderData: orderDataString });
+    velocity.render('$velocity.remoteInclude(\'GTM-AddNoScript\')', { velocity: velocity });
+
+    if (productID) {
+        velocity.render(
+            '$velocity.remoteInclude(\'GTM-DataProd\', \'productID\', $productID)',
+            {
+                velocity: velocity,
+                productID: productID
+            }
+        );
+    } else if (order) {
+        velocity.render(
+            '$velocity.remoteInclude(\'GTM-OrderConfirmation\', \'orderData\', $orderData)',
+            {
+                velocity: velocity,
+                orderData: JSON.stringify(order)
+            }
+        );
+    }
 }
 
 exports.htmlHead = htmlHead;
 exports.afterFooter = afterFooter;
-exports.confirmation = confirmation;
