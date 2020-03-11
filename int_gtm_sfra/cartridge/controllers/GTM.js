@@ -7,6 +7,29 @@
 var server = require('server');
 var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
 
+/**
+ * This function will return the price value contained in a string
+ * that can have currency inside (or something else)
+ * Examples:
+ *      - $9.97
+ *      - £9.97
+ *      - €9.97
+ *      - € 9,97
+ *      - € 9.97
+ *      - 9.97 €
+ *      - 9.97
+ *      - 37.97
+ *      - 132.97
+ *
+ * @param {string} priceStr - The price, string formatted
+ * @returns {number} - The extracted price in number format
+ */
+function extractNumberFromPriceStr(priceStr) {
+    var res = priceStr.match('(\\d+(?:\\.|,)\\d{1,2})');
+
+    return (res.length) ? res[0] : 0;
+}
+
 server.get(
     'AddScript',
     server.middleware.https,
@@ -15,7 +38,6 @@ server.get(
         var Site = require('dw/system/Site');
         var System = require('dw/system/System');
         var Locale = require('dw/util/Locale');
-
         var gtmCode = Site.getCurrent().getCustomPreferenceValue('GtmCode');
         var localeObj = Locale.getLocale(req.locale.id);
         var userAuthenticated = (session.customer.authenticated === true) ? '1' : '0'; // eslint-disable-line no-undef
@@ -97,8 +119,8 @@ server.get(
 
         productData.product_ID = currentProduct.ID;
         productData.product_Name = currentProduct.name;
-        productData.product_Price = currentProduct.priceModel.getPrice().value;
-        productData.product_Brand = currentProduct.brand;
+        productData.product_Price = currentProduct.priceModel.getPrice().getDecimalValue();
+        productData.product_Brand = (currentProduct.brand) ? currentProduct.brand : '';
         productData.product_Category = productCategory;
 
         // Check if product is Variant Product or Variant Group
@@ -120,7 +142,7 @@ server.get(
                 bundledProduct.push({
                     bundle_id: currProdBundle[n].ID,
                     bundle_name: currProdBundle[n].name,
-                    bundle_price: currProdBundle[n].priceModel.getPrice().value,
+                    bundle_price: currProdBundle[n].priceModel.getPrice().getDecimalValue(),
                     bundle_brand: currProdBundle[n].brand
                 });
             }
@@ -133,7 +155,7 @@ server.get(
                 partProductSet.push({
                     productset_id: currProdSet[x].ID,
                     productset_name: currProdSet[x].name,
-                    productset_price: currProdSet[x].priceModel.getPrice().value,
+                    productset_price: currProdSet[x].priceModel.getPrice().getDecimalValue(),
                     productset_brand: currProdSet[x].brand
                 });
             }
@@ -169,11 +191,12 @@ server.get(
         var purchase = {
             id: order.orderNumber,
             affiliation: 'Online Store',
-            revenue: order.totals.grandTotal,
-            tax: order.totals.totalTax,
-            shipping: order.totals.totalShippingCost,
-            coupon: null
+            revenue: extractNumberFromPriceStr(order.totals.grandTotal),
+            tax: extractNumberFromPriceStr(order.totals.totalTax),
+            shipping: extractNumberFromPriceStr(order.totals.totalShippingCost),
+            coupon: ''
         };
+
         var orderProduct = [];
         for (var z = 0; z < order.shipping.length; z += 1) {
             var listProdData = order.shipping[z].productLineItems.items;
@@ -182,8 +205,8 @@ server.get(
                 orderProduct.push({
                     id: currentProduct.id,
                     name: currentProduct.productName,
-                    price: currentProduct.priceTotal.price,
-                    brand: currentProduct.brand,
+                    price: extractNumberFromPriceStr(currentProduct.priceTotal.price),
+                    brand: (currentProduct.brand) ? currentProduct.brand : '',
                     quantity: currentProduct.quantity
                 });
 
@@ -204,11 +227,11 @@ server.get(
                 }
             }
         }
+
         purchase.product = orderProduct;
-        var commandProduct = JSON.stringify(purchase);
 
         res.render('gtmdataconfirm', {
-            CommandProduct: commandProduct
+            CommandProduct: JSON.stringify(purchase)
         });
         next();
     }
