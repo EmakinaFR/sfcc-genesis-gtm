@@ -8,14 +8,6 @@ have GTM included in your header and a set of e-commerce tags pre-defined. You c
 normally all MVP ones are already handled.
 
 
-## Get information
-
-### Tools used on project
-
-* [Jira](https://bugtracking.emakina.net/browse/FRPERF-59), ticketing tool, used to manage User Stories, backlog, sprints and reporting
-* [Gitlab](https://gitlab.emakina.net/emakinafr/packages/javascript/salesforce-commerce-cloud/gtm-module), used to manage code and contribute.
-
-
 ## Guidelines Git
 
 ### Branches and environments
@@ -31,7 +23,3 @@ One branch per ticket named with the following pattern:
 For information, feed-back or questions, developers who worked on this project are:
 
 * Thibault Desmoulins - Emakina [<tds@emakina.fr>](mailto:tds@emakina.fr)
-
-If you have questions about GTM, you can contact:
-
-* Valentin Rançon - Emakina [<tds@emakina.fr>](mailto:vra@emakina.fr)
