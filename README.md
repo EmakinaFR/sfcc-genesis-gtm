@@ -17,8 +17,7 @@ You can follow the installation part inside the `documentation` directory.
 ⚙ Configuration
 ----------------
 
-The configuration is the same for both Site Genesis and SFRA websites. You just have to 
-follow these instructions:
+To import the configuration, you just have to follow these instructions:
 - compress the "metadata" folder into a zip file (metadata.zip)
 - log into your Business Manager
 - go to ​Administration > Site Development > Site Import & Export
